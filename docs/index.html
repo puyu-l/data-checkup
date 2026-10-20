@@ -50,14 +50,36 @@
   </div>
 
   <div class="card">
-    <h2>示例数据里埋了 13 个问题</h2>
+    <h2>示例数据里埋了 18 个问题</h2>
     <div class="stats">
       <div><b>6</b>严重</div>
-      <div><b>6</b>警告</div>
-      <div><b>1</b>提示</div>
+      <div><b>8</b>警告</div>
+      <div><b>4</b>提示</div>
     </div>
     <p style="margin-top:16px">
       <a class="btn" href="report-demo.html">查看生成的体检报告 →</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>核心是一张关系图</h2>
+    <p>规则只是关系的可执行版本。整个模型只有一条主干：</p>
+    <p style="font-family:ui-monospace,Consolas,monospace;font-size:13px;background:#F1EFE8;padding:12px 14px;border-radius:8px;line-height:1.9">
+      合同 ─┬─ 开票 ── 收款流水<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ 分包 ── 成本归集<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→ 项目毛利
+    </p>
+    <p>合同是唯一源头，所有钱都从它长出来。其中「产值 × 约定收款比例 = 应收」这一层最关键 ——
+    它把「钱该什么时候到」从记忆变成了可计算的数字，欠款才可能被自动发现。</p>
+  </div>
+
+  <div class="card">
+    <h2>穿透：任何数字都能追到源头</h2>
+    <p>判断关系模型设计得完不完整，有个很硬的标准：能不能从任何一个数字追到它的源头和归属。</p>
+    <p><code>python checkup.py --trace HT-2026-005</code></p>
+    <p style="font-size:13px;color:#5F5E5A">
+      输出产值 → 应收 → 每张发票 → 每笔到账 → 分包 → 成本归集 → 毛利。
+      示例数据里这一屏同时暴露三个问题：发票号重复导致串单、某笔付款多了一个量级、项目毛利因此显示为负 183 万。
     </p>
   </div>
 
@@ -67,16 +89,17 @@
       <li>纯 Python 标准库，不需要安装任何依赖</li>
       <li><code>python checkup.py</code> 检查自带示例</li>
       <li><code>python checkup.py 我的数据目录</code> 检查自己的数据</li>
+      <li><code>python checkup.py --trace 单号</code> 穿透查看一个单号的完整链条</li>
       <li>终端输出摘要，同时生成单文件 HTML 报告</li>
     </ul>
   </div>
 
   <div class="card">
-    <h2>九条规则</h2>
+    <h2>十条规则</h2>
     <ul>
       <li>必填项缺失、单号重复、疑似重复记账</li>
       <li>引用不存在、时间倒置、日期格式不统一</li>
-      <li>金额为负、超额开票、金额不符、疑似离群值</li>
+      <li>金额为负、超额开票、金额不符、应收未收、疑似离群值</li>
     </ul>
     <p style="margin-top:12px;color:#5F5E5A;font-size:13px">
       离群值用四分位距判断而非平均数 —— 一笔极端值会把平均数拉高，反而藏住它自己。

@@ -282,6 +282,57 @@ def check_reconcile(ctx):
     return out
 
 
+def check_receivable(ctx):
+    """应收对账：合同产值 × 约定收款比例 = 应收，与已到账流水比较。
+
+    这条规则是整套关系模型里最有用的一条——它把「钱该什么时候到、到多少」
+    从人的记忆变成了可计算的数字，于是欠款能被自动发现。
+    """
+    out = []
+
+    inv_by_contract = {}
+    for row in ctx["invoices"]:
+        ref = (row.get("contract_no") or "").strip()
+        inv = (row.get("invoice_no") or "").strip()
+        if ref and inv:
+            inv_by_contract.setdefault(ref, set()).add(inv)
+
+    received = {}
+    for row in ctx["ledger"]:
+        if (row.get("direction") or "").strip().lower() != "in":
+            continue
+        ref = (row.get("ref_no") or "").strip()
+        val = to_number(row.get("amount"))
+        if ref and val is not None:
+            received[ref] = received.get(ref, 0.0) + val
+
+    for row in ctx["contracts"]:
+        no = (row.get("contract_no") or "").strip()
+        if (row.get("type") or "").strip() != "商务":
+            continue
+        amount = to_number(row.get("amount"))
+        ratio = to_number(row.get("collection_ratio"))
+        if not no or amount is None or ratio is None or amount <= 0 or ratio <= 0:
+            continue
+
+        due = amount * ratio
+        got = sum(received.get(inv, 0.0) for inv in inv_by_contract.get(no, ()))
+        diff = got - due
+        if abs(diff) < 1:
+            continue
+
+        out.append(Finding(
+            WARN if diff < 0 else INFO,
+            "应收未收" if diff < 0 else "实收超过应收",
+            "contracts",
+            f"{no}（{row.get('customer')}）",
+            f"应收 {due:,.2f}（产值 {amount:,.2f} × {ratio:.0%}），"
+            f"实收 {got:,.2f}，差额 {diff:+,.2f}",
+            "确认是否有未开票的到账、预收款，或收款比例已按补充协议调整过",
+        ))
+    return out
+
+
 def check_outlier(ctx):
     """离群值：用四分位距找出「比同类大一个量级」的记录。
 
@@ -327,5 +378,6 @@ RULES = [
     check_negative,
     check_over_invoice,
     check_reconcile,
+    check_receivable,
     check_outlier,
 ]

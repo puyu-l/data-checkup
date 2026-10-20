@@ -4,6 +4,8 @@
 
 > 它不修改你的数据，只指出哪里对不上。
 
+核心不是那几条规则，而是规则背后的[数据关系模型](MODEL.md)——规则只是关系的可执行版本。
+
 ## 解决什么问题
 
 手工维护的台账，错的地方往往不是"算错了"，而是**没对上**：发票挂的合同号写错了、同一个单号录了两遍、
@@ -29,13 +31,13 @@ python checkup.py 目录 --open      # 跑完自动打开报告
 
 | 文件 | 用途 | 字段 |
 |---|---|---|
-| `contracts.csv` | 合同台账 | `contract_no` 合同号、`customer` 客户、`sign_date` 签订日期、`amount` 金额、`type` 类型 |
+| `contracts.csv` | 合同台账 | `contract_no` 合同号、`customer` 客户、`sign_date` 签订日期、`amount` 金额、`type` 类型（商务/分包）、`collection_ratio` 约定收款比例、`parent_contract_no` 所属主合同（仅分包填） |
 | `invoices.csv` | 开票台账 | `invoice_no` 发票号、`contract_no` 关联合同、`issue_date` 开票日期、`amount` 金额、`tax_rate` 税率 |
 | `ledger.csv` | 收支流水 | `id`、`date` 日期、`category` 分类、`direction` 收支方向（`in`/`out`）、`amount` 金额、`ref_no` 关联单号 |
 
 日期统一用 `YYYY-MM-DD`，金额是纯数字（不要带单位）。
 
-## 九条规则
+## 十条规则
 
 | 规则 | 级别 | 在找什么 |
 |---|---|---|
@@ -48,7 +50,21 @@ python checkup.py 目录 --open      # 跑完自动打开报告
 | 金额为负 / 为零 | 严重/警告 | 负数是冲销还是符号录错？零金额是否有业务意义？ |
 | 超额开票 | 严重 | 同一合同的开票合计超过合同金额 |
 | 金额不符 | 警告 | 流水金额与对应发票金额不等 |
+| **应收未收** | 警告/提示 | 实收与「产值 × 约定收款比例」不符，欠款或预收 |
 | 疑似离群值 | 警告 | 金额比同类大一个量级 |
+
+## 穿透查询
+
+判断关系模型设计得完不完整，有个很硬的标准：能不能从任何一个数字追到它的源头。
+
+```bash
+python checkup.py --trace HT-2026-005    # 合同号
+python checkup.py --trace FP-0007        # 发票号也行
+python checkup.py --trace 9              # 流水 id 也行
+```
+
+输出整条链：产值 → 应收 → 每张发票 → 每笔到账 → 分包 → 成本归集 → 毛利。
+模型说明见 [MODEL.md](MODEL.md)。
 
 ## 两个刻意的设计选择
 
@@ -69,10 +85,12 @@ python checkup.py 目录 --open      # 跑完自动打开报告
 
 ```
 data-checkup/
-├── checkup.py      命令行入口：读数据、跑规则、输出
-├── checks.py       九条规则 + 问题数据结构
+├── checkup.py      命令行入口：读数据、跑规则、穿透、输出
+├── checks.py       十条规则 + 问题数据结构
+├── trace.py        穿透查询：还原一个单号背后的完整关系链
 ├── report.py       HTML 报告渲染
-└── sample/         虚构示例数据（埋了 13 个问题）
+├── MODEL.md        数据关系模型（四条关系 + 设计原则）
+└── sample/         虚构示例数据（埋了 18 个问题）
 ```
 
 示例数据里的公司名、金额、单号全部虚构，与任何真实企业无关。
