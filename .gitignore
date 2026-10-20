@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+checkup-report.html
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

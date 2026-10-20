@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据体检报告 · C:\朴鱼作品\data-checkup\sample</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 20px;
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #F7F6F3; color: #2C2C2A; line-height: 1.65;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 24px; font-weight: 500; margin: 0 0 6px; }
+  .meta { font-size: 13px; color: #5F5E5A; margin-bottom: 28px; }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .card { background: #fff; border: 1px solid #E4E2DC; border-radius: 12px; padding: 16px 18px; }
+  .card .num { font-size: 26px; font-weight: 500; line-height: 1.2; }
+  .card .label { font-size: 12px; color: #5F5E5A; margin-top: 2px; }
+  .sec { font-size: 15px; font-weight: 500; margin: 30px 0 12px; }
+  .item {
+    background: #fff; border: 1px solid #E4E2DC; border-left-width: 3px;
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
+  }
+  .item .top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+  .rule { font-size: 14px; font-weight: 500; }
+  .loc { font-size: 12px; color: #5F5E5A; }
+  .msg { font-size: 14px; }
+  .advice { font-size: 13px; color: #5F5E5A; margin-top: 6px; }
+  .ok { background: #EAF3DE; border: 1px solid #C0DD97; border-radius: 12px; padding: 20px; font-size: 14px; color: #27500A; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #EFEDE8; }
+  th { background: #FAFAF8; font-weight: 500; color: #5F5E5A; }
+  footer { margin-top: 36px; font-size: 12px; color: #888780; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>数据体检报告</h1>
+  <div class="meta">
+    数据来源：C:\朴鱼作品\data-checkup\sample　·　
+    生成时间：2026-10-20 14:48　·　
+    共检查 30 条记录
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="num" style="color:#A32D2D">6</div><div class="label">严重（必须处理）</div></div>
+    <div class="card"><div class="num" style="color:#854F0B">6</div><div class="label">警告（建议核对）</div></div>
+    <div class="card"><div class="num" style="color:#185FA5">1</div><div class="label">提示（格式问题）</div></div>
+    <div class="card"><div class="num">87</div><div class="label">数据健康度（满分 100）</div></div>
+  </div>
+<div class="sec">严重问题 · 6 项</div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">金额为负</span>
+      <span class="loc">contracts · 第 5 行</span>
+    </div>
+    <div class="msg">金额为 -80,000.00</div>
+    <div class="advice">建议：负数要么是冲销、要么是录错了符号；确认后在备注里写明性质</div>
+  </div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">单号重复</span>
+      <span class="loc">invoices · 第 8 行与第 7 行</span>
+    </div>
+    <div class="msg">发票号 `FP-0006` 出现两次</div>
+    <div class="advice">建议：核对是否为重复录入；若确为两张票，说明开票方把票号写错了</div>
+  </div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">引用不存在</span>
+      <span class="loc">invoices · 第 6 行（FP-0005）</span>
+    </div>
+    <div class="msg">引用的合同 `HT-2026-999` 在主表里不存在</div>
+    <div class="advice">建议：合同号写错，或合同根本没录进系统</div>
+  </div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">时间倒置</span>
+      <span class="loc">invoices · 第 5 行（FP-0004）</span>
+    </div>
+    <div class="msg">开票日期 2026-01-25 早于合同签订日期 2026-02-11</div>
+    <div class="advice">建议：日期录错，或这笔是先开票后补合同——两种情况都需要说明</div>
+  </div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">超额开票</span>
+      <span class="loc">invoices · 合同 `HT-2026-001`（涉及第 2, 3, 4 行）</span>
+    </div>
+    <div class="msg">开票合计 520,000.00，超过合同金额 480,000.00（108.3%）</div>
+    <div class="advice">建议：核对是否有补充协议；没有的话属于多开票，需要红冲</div>
+  </div>
+  <div class="item" style="border-left-color:#A32D2D">
+    <div class="top">
+      <span class="badge" style="background:#FCEBEB;color:#791F1F">严重</span>
+      <span class="rule">必填项缺失</span>
+      <span class="loc">ledger · 第 2 行（1）</span>
+    </div>
+    <div class="msg">字段 `category` 为空</div>
+    <div class="advice">建议：补齐后再参与统计，否则分类汇总会漏掉这笔</div>
+  </div><div class="sec">警告问题 · 6 项</div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">金额为零</span>
+      <span class="loc">contracts · 第 8 行</span>
+    </div>
+    <div class="msg">金额为 0</div>
+    <div class="advice">建议：零金额记录通常没有业务意义，确认是否漏填</div>
+  </div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">疑似离群值</span>
+      <span class="loc">ledger · 第 10 行（FB-2026-002）</span>
+    </div>
+    <div class="msg">金额 2,600,000.00，中位数 155,000.00，正常区间约 0 ~ 1,014,550</div>
+    <div class="advice">建议：大概率是多打或少打了一个零，也可能是真有大额业务——请人工确认</div>
+  </div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">疑似重复记账</span>
+      <span class="loc">ledger · 第 12 行与第 11 行</span>
+    </div>
+    <div class="msg">日期、分类、方向、金额四项完全相同（3200）</div>
+    <div class="advice">建议：如果确实是两笔业务，请在备注里区分；否则删掉一条</div>
+  </div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">金额不符</span>
+      <span class="loc">ledger · 第 4 行（FP-0003）</span>
+    </div>
+    <div class="msg">流水 190,000.00 ≠ 发票 200,000.00，差额 -10,000.00</div>
+    <div class="advice">建议：部分付款请拆成多行分别登记；否则是其中一边录错了</div>
+  </div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">金额不符</span>
+      <span class="loc">ledger · 第 7 行（FP-0006）</span>
+    </div>
+    <div class="msg">流水 300,000.00 ≠ 发票 150,000.00，差额 150,000.00</div>
+    <div class="advice">建议：部分付款请拆成多行分别登记；否则是其中一边录错了</div>
+  </div>
+  <div class="item" style="border-left-color:#854F0B">
+    <div class="top">
+      <span class="badge" style="background:#FAEEDA;color:#633806">警告</span>
+      <span class="rule">金额为零</span>
+      <span class="loc">ledger · 第 13 行</span>
+    </div>
+    <div class="msg">金额为 0</div>
+    <div class="advice">建议：零金额记录通常没有业务意义，确认是否漏填</div>
+  </div><div class="sec">提示问题 · 1 项</div>
+  <div class="item" style="border-left-color:#185FA5">
+    <div class="top">
+      <span class="badge" style="background:#E6F1FB;color:#0C447C">提示</span>
+      <span class="rule">日期格式不统一</span>
+      <span class="loc">invoices · 第 9 行</span>
+    </div>
+    <div class="msg">字段 `issue_date` 用了 `2026/5/20`，其他行是 YYYY-MM-DD</div>
+    <div class="advice">建议：批量替换成 YYYY-MM-DD，否则按月统计会漏</div>
+  </div>
+  <div class="sec">数据概览</div>
+  <table>
+    <tr><th>数据表</th><th>记录数</th></tr>
+    <tr><td>contracts</td><td>9</td></tr><tr><td>invoices</td><td>8</td></tr><tr><td>ledger</td><td>13</td></tr>
+  </table>
+
+  <footer>由 data-checkup 生成 · 规则可扩展，见 checks.py</footer>
+</div>
+</body>
+</html>

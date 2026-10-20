@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据体检 · 台账一致性检查</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 60px 20px;
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #F7F6F3; color: #2C2C2A; line-height: 1.7;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 500; margin: 0 0 8px; }
+  .sub { font-size: 15px; color: #5F5E5A; margin-bottom: 36px; }
+  .card {
+    background: #fff; border: 1px solid #E4E2DC; border-radius: 12px;
+    padding: 22px 24px; margin-bottom: 14px;
+  }
+  h2 { font-size: 15px; font-weight: 500; margin: 0 0 10px; }
+  p { font-size: 14px; margin: 0 0 10px; }
+  ul { font-size: 14px; margin: 0; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  code {
+    font-family: ui-monospace, Consolas, monospace; font-size: 13px;
+    background: #F1EFE8; padding: 1px 6px; border-radius: 4px;
+  }
+  .btn {
+    display: inline-block; margin-top: 6px; padding: 10px 20px;
+    background: #2C2C2A; color: #fff; text-decoration: none;
+    border-radius: 8px; font-size: 14px;
+  }
+  .stats { display: flex; gap: 24px; margin-top: 4px; }
+  .stats div { font-size: 13px; color: #5F5E5A; }
+  .stats b { display: block; font-size: 22px; font-weight: 500; color: #2C2C2A; }
+  footer { margin-top: 40px; font-size: 12px; color: #888780; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>数据体检</h1>
+  <div class="sub">给台账做一致性检查 —— 输入几个 CSV，输出一份能直接发给同事看的问题报告。</div>
+
+  <div class="card">
+    <h2>它解决什么问题</h2>
+    <p>手工维护的台账，错的地方往往不是「算错了」，而是「没对上」：发票挂的合同号写错了、同一个单号录了两遍、
+    流水金额和发票差了一万、某个金额多打了一个零。</p>
+    <p>这些错误单看每一行都正常，只有交叉比对才能发现。这个工具把交叉比对写成规则，一次跑完。</p>
+  </div>
+
+  <div class="card">
+    <h2>示例数据里埋了 13 个问题</h2>
+    <div class="stats">
+      <div><b>6</b>严重</div>
+      <div><b>6</b>警告</div>
+      <div><b>1</b>提示</div>
+    </div>
+    <p style="margin-top:16px">
+      <a class="btn" href="report-demo.html">查看生成的体检报告 →</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>怎么用</h2>
+    <ul>
+      <li>纯 Python 标准库，不需要安装任何依赖</li>
+      <li><code>python checkup.py</code> 检查自带示例</li>
+      <li><code>python checkup.py 我的数据目录</code> 检查自己的数据</li>
+      <li>终端输出摘要，同时生成单文件 HTML 报告</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>九条规则</h2>
+    <ul>
+      <li>必填项缺失、单号重复、疑似重复记账</li>
+      <li>引用不存在、时间倒置、日期格式不统一</li>
+      <li>金额为负、超额开票、金额不符、疑似离群值</li>
+    </ul>
+    <p style="margin-top:12px;color:#5F5E5A;font-size:13px">
+      离群值用四分位距判断而非平均数 —— 一笔极端值会把平均数拉高，反而藏住它自己。
+    </p>
+  </div>
+
+  <footer>示例数据全部虚构 · 与任何真实企业无关</footer>
+</div>
+</body>
+</html>
